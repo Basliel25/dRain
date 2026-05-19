@@ -1,0 +1,15 @@
+[package]
+name = "dRain"
+version = "0.1.0"
+edition = "2024"
+description = "Streaming log template extraction engine"
+authors = ["Basliel B. Gugsa"]
+license = "MIT"
+
+[dependencies]
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "throughput"
+harness = false
