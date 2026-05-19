@@ -50,8 +50,6 @@ pub struct Drain {
 // FFI Entry Points
 
 /// C-compatible parse function for use with Trafilo.
-///
-/// Called from C worker threads to parse a single log line.
 /// # Arguments
 /// * `raw_line`   - Null-terminated C string (owned by caller).
 /// * `template_id_out` - Out parameter for the template ID.
@@ -66,4 +64,34 @@ pub extern "C" fn drain_parse(
     template_id_out: *mut u64,
     params_out: *mut *mut c_char,
     params_len: *mut c_int,
-) -> c_int;
+) -> c_int {
+    if raw_line.is_null()
+        || template_id_out.is_null()
+        || params_out.is_null()
+        || params_len.is_null()
+    {
+        return -1;
+    }
+
+    // Convert C string to Rust &str
+    let c_str = unsafe { std::ffi::CStr::from_ptr(raw_line) };
+    let Ok(raw) = c_str.to_str() else {
+        return -1;
+    };
+
+    //   Takss
+    //   Call Drain::parse(raw)
+    //   Write template_id to template_id_out
+    //   Allocate params array and copy parameter strings
+    //   Write count to params_len
+
+    unsafe {
+        *template_id_out = 0;
+        *params_len = 0;
+        *params_out = std::ptr::null_mut();
+    }
+
+    0
+}
+
+
