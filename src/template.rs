@@ -59,8 +59,41 @@ impl Template {
         }
     }
 
-    /// Score incoming tokens and extract params in one pass
-    pub fn try_match(&self, tokens: &[&str])-> MatchResult{todo!()}
+    /// Evaluate incoming tokens with an existing template,
+    /// count matches and similarities. Extract wildcards.
+    ///
+    /// # Arguments
+    /// *tokens* - the tokens being evaluated against
+    ///
+    /// # Return
+    ///
+    /// ['MatchResult'] with
+    /// - similarity - ratio of match hits to total slots
+    /// - prams - a vector of wildcard hits
+    pub fn try_match(&self, tokens: &[&str])-> MatchResult{
+        let mut matches = 0usize;
+        let mut params: Vec<Box<str>> = Vec::new(); // The params that are signed as wildcard
+
+        for (slot, token) in self.slots().iter().zip(tokens.iter().copied()) {
+            match slot {
+                TokenSlot::Literal(lit) => {
+                    if &**lit == token {
+                        matches += 1; // If token matches as a template literal
+                                      // Count as a match
+                    }
+                }
+                TokenSlot::Wildcard => {
+                    // Wildcard matches also count according to drain
+                    // spec.
+                    matches += 1; 
+                    params.push(token.into());
+                }
+            }
+        }
+
+        let similarity = matches as f64 / self.slots().len() as f64;
+        MatchResult {similarity, params}
+    }
 
 
     /// Promote diverging literal positions to wildcard
