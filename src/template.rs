@@ -59,7 +59,7 @@ impl Template {
     pub fn id(&self) -> TemplateId {todo!()}
     pub fn len(&self) -> usize{todo!()}
     pub fn match_count(&self)-> u64{todo!()}
-    pub fn slote(&self) -> &[TokenSlot]{todo!()}
+    pub fn slots(&self) -> &[TokenSlot]{todo!()}
 
     /// Constuctor for tests
     #[cfg(test)]
@@ -120,7 +120,18 @@ mod tests {
         assert_eq!(&*result.params[0], "alice");
    }
    // Merge promotes diverging point to a wildcard
-   // o
+   fn merge_promotes_diverging_points() {
+       let mut temp = Template::new_template(1, &["Failed", "Pass", "For", "alice"]);
+
+       let num_promoted = temp.merge(&["Failed", "Pass", "For", "bob"]);
+       // BOB/ALICE - 4th token is diverging point
+       assert_eq!(num_promoted, 1);
+       assert_eq!(temp.slots(), &[
+           TokenSlot::Literal("Failed".into()),
+           TokenSlot::Literal("Pass".into()),
+           TokenSlot::Literal("For".into()),
+           TokenSlot::Wildcard,]);
+   }
    // merging into existing wildcard should be a no-op
    //
    // Count of merge is accurate? - on multiple merges
