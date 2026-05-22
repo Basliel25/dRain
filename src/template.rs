@@ -165,7 +165,7 @@ mod tests {
 
        let result = new_template.try_match(&["sshd", "Nutz", "Pass", "ROB"]);
        assert!((result.similarity - 0.75).abs() < 1e-9);
-       assert!(!(result.params.is_empty()));
+       assert!(result.params.is_empty());
    }
 
    // Partial match with fixed ratio
