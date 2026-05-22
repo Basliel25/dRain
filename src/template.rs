@@ -43,6 +43,9 @@ impl Template {
     /// as a literal
     pub fn new_tempalte(id: TemplateId, token: &[&str])-> Self;
 
+    /// Score incoming tokens and extract params in one pass
+    pub fn try_match(&self, tokens: &[&str])-> MatchResult;
+
     /// Promote diverging literal positions to wildcard
     /// Returns the number of slots newly promoted
     pub fn merge(&mut self, tokens: &str)-> usize;
@@ -58,3 +61,7 @@ impl Template {
     pub fn slote(&self) -> &[TokenSlot];
 }
 
+impl std::fmt::Display for Template {
+    // renders as "sshd Failed password <*>"
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result;
+}
