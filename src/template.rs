@@ -85,7 +85,7 @@ mod tests {
        let new_template = Template::new_template(1, &["sshd", "Failed", "Pass", "ROB"]);
 
        let result = new_template.try_match(&["sshd", "Nutz", "Pass", "ROB"]);
-       assert_eq!(result.similarity, 0.75);
+       assert!((result.similarity - 0.75).abs() < 1e-9);
        assert!(!(result.params.is_empty()));
    }
    //
