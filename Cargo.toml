@@ -6,10 +6,3 @@ description = "Streaming log template extraction engine"
 authors = ["Basliel B. Gugsa"]
 license = "MIT"
 
-[dependencies]
-[dev-dependencies]
-criterion = "0.5"
-
-[[bench]]
-name = "throughput"
-harness = false

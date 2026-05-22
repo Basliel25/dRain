@@ -56,15 +56,15 @@ impl Template {
 
 
     /// Accessors
-    pub fn id(&self) -> TemplateId;
-    pub fn len(&self) -> usize;
-    pub fn match_count(&self)-> u64;
-    pub fn slote(&self) -> &[TokenSlot];
+    pub fn id(&self) -> TemplateId {todo!()}
+    pub fn len(&self) -> usize{todo!()}
+    pub fn match_count(&self)-> u64{todo!()}
+    pub fn slote(&self) -> &[TokenSlot]{todo!()}
 }
 
 impl std::fmt::Display for Template {
     // renders as "sshd Failed password <*>"
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result;
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result{todo!()}
 }
 
 
@@ -81,6 +81,13 @@ mod tests {
         }
 
    // Try one template against mismatching literals
+   fn mismatching_literals_with_similar_template() {
+       let new_template = Template::new_template(1, &["sshd", "Failed", "Pass", "ROB"]);
+
+       let result = new_template.try_match(&["sshd", "Nutz", "Pass", "ROB"]);
+       assert_eq!(result.similarity, 0.75);
+       assert!(!(result.params.is_empty()));
+   }
    //
    // Partial match with fixed ratio
    // ['a', 'b', 'c'] vs ['a', 'c', 'd'] - 0.75 silimlarity

@@ -59,7 +59,7 @@ pub struct Drain {
 /// # Returns
 /// * `0` on success.
 /// * `-1` on failure (null pointer, allocation error).
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn drain_parse(
     raw_line: *const c_char,
     template_id_out: *mut u64,
