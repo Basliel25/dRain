@@ -36,6 +36,7 @@ pub struct MatchResult {
     pub params: Vec<Box<str>>,
 }
 
+
 impl Template {
 
     /// Create a new tempalte entry, with every token starting
@@ -56,5 +57,4 @@ impl Template {
     pub fn match_count(&self)-> u64;
     pub fn slote(&self) -> &[TokenSlot];
 }
-
 
