@@ -53,3 +53,27 @@ pub fn tokenize_line(raw: &str) -> Vec<Box<str>> {
         .map(|t| t.into())
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+     #[test]
+    fn preprocess_replaces_ip() {
+        assert_eq!(preprocess("connect from 192.168.1.1"), "connect from <*>");
+    }
+
+    #[test]
+    fn preprocess_replaces_hex() {
+        assert_eq!(preprocess("address 0xdeadbeef"), "address <*>");
+    }
+
+    #[test]
+    fn preprocess_replaces_int() {
+        assert_eq!(preprocess("pid 1234"), "pid <*>");
+    }
+
+    #[test]
+    fn preprocess_replaces_pid_in_brackets() {
+        assert_eq!(preprocess("sshd[1234]:"), "sshd[<*>]:");
+    }
+}
