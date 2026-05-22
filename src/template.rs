@@ -18,13 +18,13 @@ pub enum TokenSlot {
 }
 
 /// Global template IDs
-pub type TempalteId = u64;
+pub type TemplateId = u64;
 
 /// Structural pattern that is extracted from log lines
 #[derive(Debug)]
 pub struct Template {
     id: TemplateId,
-    slots: Vector<TokenSlot>,
+    slots: Vec<TokenSlot>,
     match_count: u64,
 }
 
@@ -48,7 +48,7 @@ impl Template {
 
     /// Promote diverging literal positions to wildcard
     /// Returns the number of slots newly promoted
-    pub fn merge(&mut self, tokens: &str)-> usize;
+    pub fn merge(&mut self, tokens: &[&str])-> usize;
 
     /// Bump match_count
     pub fn record_match(&mut self);
