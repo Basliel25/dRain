@@ -97,8 +97,29 @@ impl Template {
 
 
     /// Promote diverging literal positions to wildcard
-    /// Returns the number of slots newly promoted
-    pub fn merge(&mut self, tokens: &[&str])-> usize{todo!()}
+    ///
+    /// # Arguments
+    /// 'tokens' - tokens being evaluated against a template
+    ///
+    /// # Return 
+    /// 'promoted' the number of literals promoted to wildcards
+    pub fn merge(&mut self, tokens: &[&str])-> usize{
+        let mut promoted = 0usize;
+
+        for (slot, token) in self.slots.iter_mut().zip(tokens.iter().copied()) {
+            match slot {
+                TokenSlot::Literal(lit) => {
+                    if lit.as_ref() != token {
+                        *slot = TokenSlot::Wildcard;
+                        promoted += 1;
+                    }
+                }
+                TokenSlot::Wildcard => {}
+            }
+        }
+
+        promoted
+    }
 
     /// Bump match_count
     pub fn record_match(&mut self){todo!()}
