@@ -6,3 +6,6 @@ description = "Streaming log template extraction engine"
 authors = ["Basliel B. Gugsa"]
 license = "MIT"
 
+[dependencies]
+regex = "1.12.3"
+
