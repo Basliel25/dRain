@@ -22,7 +22,7 @@ pub type TempalteId = u64;
 
 /// Structural pattern that is extracted from log lines
 #[derive(Debug)]
-pub enum Template {
+pub struct Template {
     id: TemplateId,
     slots: Vector<TokenSlot>,
     match_count: u64,
