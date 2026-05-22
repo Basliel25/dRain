@@ -133,8 +133,23 @@ mod tests {
            TokenSlot::Wildcard,]);
    }
    // merging into existing wildcard should be a no-op
-   //
+   fn mergeing_wildcards_shouldnt_be_op() {
+        let slots = vec![
+            TokenSlot::Literal("Failed".into()),
+            TokenSlot::Literal("Pass".into()),
+            TokenSlot::Literal("For".into()),
+            TokenSlot::Wildcard,
+        ];
+
+        let mut temp = Template::from_slots(1, slots);
+       let num_promoted = temp.merge(&["Failed", "Pass", "For", "bob"]);
+       assert_eq!(num_promoted, 0);
+       assert_eq!(temp.slots(), &[
+           TokenSlot::Literal("Failed".into()),
+           TokenSlot::Literal("Pass".into()),
+           TokenSlot::Literal("For".into()),
+           TokenSlot::Wildcard,]);
+
+   }
    // Count of merge is accurate? - on multiple merges
-   //
-   //
 }
