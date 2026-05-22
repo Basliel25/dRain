@@ -78,6 +78,7 @@ impl std::fmt::Display for Template {
 mod tests {
     use super::*;
    // Identical literals are a match, try with template
+   #[test]
    fn identical_tokens_score_one() {
         let new_template = Template::new_template(1, &["sshd", "Failed", "Pass"]);
 
@@ -87,6 +88,7 @@ mod tests {
         }
 
    // Try one template against mismatching literals
+   #[test]
    fn mismatching_literals_with_similar_template() {
        let new_template = Template::new_template(1, &["sshd", "Failed", "Pass", "ROB"]);
 
@@ -97,6 +99,7 @@ mod tests {
 
    // Partial match with fixed ratio
    // ['a', 'b', 'c'] vs ['a', 'c', 'd'] - 0.75 silimlarity
+   #[test]
    fn complete_mismatch_no_wildcard() {
        let new_template = Template::new_template(1, &["sshd", "Failed", "Pass", "ROB"]);
 
@@ -105,6 +108,7 @@ mod tests {
        assert!(result.params.is_empty());
    }
    // Wildcard counts as a match - drain spec
+   #[test]
    fn wildcard_counts_as_match() {
         let slots = vec![
             TokenSlot::Literal("sshd".into()),
@@ -120,6 +124,7 @@ mod tests {
         assert_eq!(&*result.params[0], "alice");
    }
    // Merge promotes diverging point to a wildcard
+   #[test]
    fn merge_promotes_diverging_points() {
        let mut temp = Template::new_template(1, &["Failed", "Pass", "For", "alice"]);
 
@@ -133,6 +138,7 @@ mod tests {
            TokenSlot::Wildcard,]);
    }
    // merging into existing wildcard should be a no-op
+   #[test]
    fn mergeing_wildcards_shouldnt_be_op() {
         let slots = vec![
             TokenSlot::Literal("Failed".into()),
@@ -150,6 +156,22 @@ mod tests {
            TokenSlot::Literal("For".into()),
            TokenSlot::Wildcard,]);
 
+   }
+
+   #[test]
+   fn merge_promotes_multiple_diverging_positions() {
+       let mut t = Template::new_template(1, &["a", "b", "c", "d", "e"]);
+
+       let promoted = t.merge(&["a", "x", "c", "y", "z"]);
+
+       assert_eq!(promoted, 3);
+       assert_eq!(t.slots(), &[
+           TokenSlot::Literal("a".into()),
+           TokenSlot::Wildcard,
+           TokenSlot::Literal("c".into()),
+           TokenSlot::Wildcard,
+           TokenSlot::Wildcard,
+       ]);
    }
    // Count of merge is accurate? - on multiple merges
 }
