@@ -60,6 +60,12 @@ impl Template {
     pub fn len(&self) -> usize{todo!()}
     pub fn match_count(&self)-> u64{todo!()}
     pub fn slote(&self) -> &[TokenSlot]{todo!()}
+
+    /// Constuctor for tests
+    #[cfg(test)]
+    pub(crate) fn from_slots(id: TemplateId, slots: Vec<TokenSlot>) -> Self {
+        Self { id, slots, match_count: 0 }
+    }
 }
 
 impl std::fmt::Display for Template {
@@ -88,12 +94,31 @@ mod tests {
        assert!((result.similarity - 0.75).abs() < 1e-9);
        assert!(!(result.params.is_empty()));
    }
-   //
+
    // Partial match with fixed ratio
    // ['a', 'b', 'c'] vs ['a', 'c', 'd'] - 0.75 silimlarity
-   //
+   fn complete_mismatch_no_wildcard() {
+       let new_template = Template::new_template(1, &["sshd", "Failed", "Pass", "ROB"]);
+
+       let result = new_template.try_match(&["cron", "denial", "fix", "back"]);
+       assert_eq!(result.similarity, 0.0);
+       assert!(result.params.is_empty());
+   }
    // Wildcard counts as a match - drain spec
-   //
+   fn wildcard_counts_as_match() {
+        let slots = vec![
+            TokenSlot::Literal("sshd".into()),
+            TokenSlot::Literal("pass".into()),
+            TokenSlot::Literal("for".into()),
+            TokenSlot::Wildcard,
+        ];
+
+        let new_template = Template::from_slots(1, slots);
+        let result = new_template.try_match(&["sshd", "pass", "for", "alice"]);
+        assert_eq!(result.similarity, 1.0);
+        assert_eq!(result.params.len(), 1);
+        assert_eq!(&*result.params[0], "alice");
+   }
    // Merge promotes diverging point to a wildcard
    // o
    // merging into existing wildcard should be a no-op
