@@ -41,17 +41,18 @@ impl Template {
 
     /// Create a new tempalte entry, with every token starting
     /// as a literal
-    pub fn new_tempalte(id: TemplateId, token: &[&str])-> Self;
+    pub fn new_template(id: TemplateId, token: &[&str])-> Self{todo!()}
 
     /// Score incoming tokens and extract params in one pass
-    pub fn try_match(&self, tokens: &[&str])-> MatchResult;
+    pub fn try_match(&self, tokens: &[&str])-> MatchResult{todo!()}
+
 
     /// Promote diverging literal positions to wildcard
     /// Returns the number of slots newly promoted
-    pub fn merge(&mut self, tokens: &[&str])-> usize;
+    pub fn merge(&mut self, tokens: &[&str])-> usize{todo!()}
 
     /// Bump match_count
-    pub fn record_match(&mut self);
+    pub fn record_match(&mut self){todo!()}
 
 
     /// Accessors
@@ -64,4 +65,33 @@ impl Template {
 impl std::fmt::Display for Template {
     // renders as "sshd Failed password <*>"
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result;
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+   // Identical literals are a match, try with template
+   fn identical_tokens_score_one() {
+        let new_template = Template::new_template(1, &["sshd", "Failed", "Pass"]);
+
+        let result = new_template.try_match(&["sshd", "Failed", "Pass"]);
+        assert_eq!(result.similarity, 1.0);
+        assert!(result.params.is_empty());
+        }
+
+   // Try one template against mismatching literals
+   //
+   // Partial match with fixed ratio
+   // ['a', 'b', 'c'] vs ['a', 'c', 'd'] - 0.75 silimlarity
+   //
+   // Wildcard counts as a match - drain spec
+   //
+   // Merge promotes diverging point to a wildcard
+   // o
+   // merging into existing wildcard should be a no-op
+   //
+   // Count of merge is accurate? - on multiple merges
+   //
+   //
 }
