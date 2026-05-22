@@ -173,5 +173,16 @@ mod tests {
            TokenSlot::Wildcard,
        ]);
    }
+
+   #[test]
+   fn record_match_increments_counter() {
+       let mut t = Template::new_template(1, &["foo"]);
+
+       assert_eq!(t.match_count(), 0);
+       t.record_match();
+       assert_eq!(t.match_count(), 1);
+       t.record_match();
+       assert_eq!(t.match_count(), 2);
+   }
    // Count of merge is accurate? - on multiple merges
 }
