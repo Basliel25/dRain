@@ -38,10 +38,26 @@ pub struct MatchResult {
 
 
 impl Template {
+    /// Create a new tempalte entry from sequence of tokens
+    ///
+    /// Every Token starts as TokenSlot::literal<token>
+    /// Wildcards are introduced on merge
+    ///
+    /// # Arguments
+    /// * 'id' - The global template ID, immutable for life time
+    /// * 'token' - Series of tokens extracted from log input
+    pub fn new_template(id: TemplateId, token: &[&str])-> Self{
+        let slots = token.iter()
+        .copied()
+        .map(|token| TokenSlot::Literal(token.into()))
+        .collect();
 
-    /// Create a new tempalte entry, with every token starting
-    /// as a literal
-    pub fn new_template(id: TemplateId, token: &[&str])-> Self{todo!()}
+        Self {
+            id,
+            slots,
+            match_count: 0,
+        }
+    }
 
     /// Score incoming tokens and extract params in one pass
     pub fn try_match(&self, tokens: &[&str])-> MatchResult{todo!()}
