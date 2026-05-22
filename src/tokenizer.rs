@@ -9,9 +9,17 @@
 use std::sync::LazyLock;
 use regex::Regex;
 
-let RE_IP = Regex::new(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b").unwrap();
-let RE_HEX = Regex::new(r"\b0x[0-9a-fA-F]+\b").unwrap();
-let RE_INT = Regex::new(r"\b\d+\b").unwrap();
+static RE_IP:  LazyLock<Regex> = LazyLock::new(|| Regex::new(
+    r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
+).unwrap());
+
+static RE_HEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(
+    r"\b0x[0-9a-fA-F]+\b"
+).unwrap());
+
+static RE_INT: LazyLock<Regex> = LazyLock::new(|| Regex::new(
+    r"\b\d+\b"
+).unwrap());
 
 const WILDCARD: &str = "<*>";
 
