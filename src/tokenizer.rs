@@ -24,6 +24,11 @@ static RE_INT: LazyLock<Regex> = LazyLock::new(|| Regex::new(
 const WILDCARD: &str = "<*>";
 
 /// Preprocess
-pub fn preprocess(raw: &str) -> String {todo!()} 
+pub fn preprocess(raw: &str) -> String {
+    let cleaned_string = RE_IP.replace_all(raw, WILDCARD);
+    let cleaned_string = RE_HEX.replace_all(&cleaned_string, WILDCARD);
+    let cleaned_string = RE_INT.replace_all(&cleaned_string, WILDCARD);
+    cleaned_string.into_owned()
+} 
 
 pub fn tokenize(line: &str) -> Vec<&str> {todo!()}
