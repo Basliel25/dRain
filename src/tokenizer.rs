@@ -23,7 +23,17 @@ static RE_INT: LazyLock<Regex> = LazyLock::new(|| Regex::new(
 
 const WILDCARD: &str = "<*>";
 
-/// Preprocess
+/// Preprocess Text
+/// Match Regex with known patterns and replace with wildcard
+/// Known patterns include:
+/// - IP addresses
+/// - HEX digits
+/// - INT digits
+///
+/// # Arguments
+/// 'raw' string of tokens to be preprocessed
+/// # Returns
+/// owned string with patterns replaced
 pub fn preprocess(raw: &str) -> String {
     let cleaned_string = RE_IP.replace_all(raw, WILDCARD);
     let cleaned_string = RE_HEX.replace_all(&cleaned_string, WILDCARD);
@@ -31,4 +41,15 @@ pub fn preprocess(raw: &str) -> String {
     cleaned_string.into_owned()
 } 
 
-pub fn tokenize(line: &str) -> Vec<&str> {todo!()}
+/// Tokenize
+/// Strip whitespace and return a vector of tokens
+pub fn tokenize(line: &str) -> Vec<&str> {line.split_whitespace().collect()}
+
+
+pub fn tokenize_line(raw: &str) -> Vec<Box<str>> {
+    let processed = preprocess(raw);
+    tokenize(&processed)
+        .into_iter()
+        .map(|t| t.into())
+        .collect()
+}
