@@ -122,14 +122,15 @@ impl Template {
     }
 
     /// Bump match_count
-    pub fn record_match(&mut self){todo!()}
+    /// Called by the tree leaf when a match is won
+    pub fn record_match(&mut self){ self.match_count += 1;}
 
 
     /// Accessors
-    pub fn id(&self) -> TemplateId {todo!()}
-    pub fn len(&self) -> usize{todo!()}
-    pub fn match_count(&self)-> u64{todo!()}
-    pub fn slots(&self) -> &[TokenSlot]{todo!()}
+    pub fn id(&self) -> TemplateId {self.id as u64}
+    pub fn len(&self) -> usize{self.slots.len()}
+    pub fn match_count(&self)-> u64{self.match_count}
+    pub fn slots(&self) -> &[TokenSlot]{&self.slots}
 
     /// Constuctor for tests
     #[cfg(test)]
