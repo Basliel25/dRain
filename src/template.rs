@@ -126,6 +126,18 @@ impl Template {
     pub fn record_match(&mut self){ self.match_count += 1;}
 
 
+    /// Constuct a template from tokens, i use it for testing other modules
+    pub fn from_tokens(id: u64, tokens: &[&str]) -> Self {
+        let slots = tokens
+            .iter()
+            .map(|t| TokenSlot::Literal((*t).into()))
+            .collect();
+        Self {
+            id,
+            slots,
+            match_count: 1,
+        }
+    }
     /// Accessors
     pub fn id(&self) -> TemplateId {self.id as u64}
     pub fn len(&self) -> usize{self.slots.len()}

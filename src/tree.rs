@@ -43,4 +43,5 @@ mod tests {
         assert!(outcome.created);
         assert!(outcome.params.is_empty());
     }
+
 }
