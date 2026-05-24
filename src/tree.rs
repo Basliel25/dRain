@@ -18,6 +18,7 @@ pub struct MatchOutcome {
     pub created: bool,
 }
 
+fn score_leaf(leaf: &[Template], tokens: &[&str]) -> Option<(usize, MatchResult)> { todo!()}
 impl Tree {
     pub fn new(threshold: f64) -> Self {
         Self {
@@ -26,7 +27,20 @@ impl Tree {
             threshold,
         }
     }
-    pub fn match_or_insert(&mut self, tokens: &[&str]) -> MatchOutcome {todo!()}
+    fn find_or_create_leaf_mut(&mut self, ...) -> &mut Vec<Template> {todo!()}
+    pub fn match_or_insert(&mut self, tokens: &[&str]) -> MatchOutcome {
+        //if tokens is empty return sentinel MatchOutcome
+
+        // Find or create a leaf
+        // Score a leaf
+
+        // if best exists and best.similarity >= threshold
+        // Template is leaf at best index
+        // Merge template and record a match
+        // else
+        // Create new template push leaf onto it 
+    todo!()
+    }
 }
 
 
@@ -43,5 +57,4 @@ mod tests {
         assert!(outcome.created);
         assert!(outcome.params.is_empty());
     }
-
 }
