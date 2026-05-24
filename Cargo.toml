@@ -9,6 +9,10 @@ license = "MIT"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[[bin]]
+name = "drain"
+path = "src/main.rs"
+
 [dependencies]
 libc = "0.2.186"
 regex = "1.12.3"
