@@ -127,4 +127,44 @@ mod tests {
         assert!(outcome.created);
         assert!(outcome.params.is_empty());
     }
+
+    #[test]
+    fn identical_line_matches_existing_template() {
+        let mut tree = Tree::new(0.5);
+        let tokens = ["sshd[<*>]:", "Failed", "password"];
+        let first = tree.match_or_insert(&tokens);
+        let second = tree.match_or_insert(&tokens);
+        assert_eq!(first.id, second.id);
+        assert!(!second.created);
+    }
+
+    #[test]
+    fn different_length_creates_separate_template() {
+        let mut tree = Tree::new(0.5);
+        let a = tree.match_or_insert(&["foo", "bar"]);
+        let b = tree.match_or_insert(&["foo", "bar", "baz"]);
+        assert_ne!(a.id, b.id);
+        assert!(b.created);
+    }
+
+    #[test]
+    fn different_first_token_creates_separate_template() {
+        let mut tree = Tree::new(0.5);
+        let a = tree.match_or_insert(&["sshd", "Failed", "password"]);
+        let b = tree.match_or_insert(&["kernel", "Failed", "password"]);
+        assert_ne!(a.id, b.id);
+        assert!(b.created);
+    }
+
+    #[test]
+    fn similar_line_merges_and_extracts_params() {
+        let mut tree = Tree::new(0.5);
+        let _ = tree.match_or_insert(&["Failed", "password", "for", "alice"]);
+        let second = tree.match_or_insert(&["Failed", "password", "for", "bob"]);
+        // Same template id — they merged
+        assert_eq!(second.id, 0);
+        assert!(!second.created);
+        // The diverging position was promoted to wildcard, "bob" extracted
+        assert_eq!(second.params, vec!["bob"]);
+    }
 }
