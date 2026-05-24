@@ -18,6 +18,14 @@ pub struct MatchOutcome {
     pub created: bool,
 }
 
-
+impl Tree {
+    pub fn new(threshold: f64) -> Self {
+        Self {
+            by_length: HashMap::new(),
+            next_id: 0,
+            threshold,
+        }
+    }
+}
 
 
