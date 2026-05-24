@@ -27,7 +27,29 @@ impl Tree {
             threshold,
         }
     }
-    fn find_or_create_leaf_mut(&mut self, ...) -> &mut Vec<Template> {todo!()}
+    fn find_or_create_leaf_mut(&mut self, 
+        length: usize, 
+        first_token:&str) -> &mut Vec<Template> {
+
+        // Translate the length of a node
+        let length_node = self.by_length.entry(length)
+            .or_insert_with(|| TreeNode::Length(HashMap::new()));
+
+        // Create a branch based on token length
+        let map = match length_node {
+            TreeNode::Length(m) => m,
+            TreeNode::Leaf(_) => unreachable!("by_legth or tracks length nodes"),
+        }
+
+        // Create a leaf for token templates
+        let leaf_node = map.entry(first_token.into())
+            .or_insert_with(|| TreeNode::Leaf(Vec::new()));
+
+        match leaf_node {
+            TreeNode::Leaf(v) => v, 
+            TreeNode::Length(_) => unreachable!("second level only contains leaf"),
+        }
+    }
     pub fn match_or_insert(&mut self, tokens: &[&str]) -> MatchOutcome {
         //if tokens is empty return sentinel MatchOutcome
 
