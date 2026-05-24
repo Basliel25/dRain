@@ -118,4 +118,10 @@ mod tests {
         assert_eq!(tokenize("foo"), vec!["foo"]);
     }
 
+    #[test]
+    fn tokenize_handles_tabs() {
+        assert_eq!(tokenize("foo\tbar\tbaz"), vec!["foo", "bar", "baz"]);
+    }
+
+
 }
