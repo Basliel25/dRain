@@ -93,7 +93,7 @@ impl Tree {
             template.merge(tokens);
             template.record_match();
             MatchOutcome {
-                id: template.id,
+                id: template.id(),
                 params: result.params,
                 created: false,
             }
@@ -101,7 +101,7 @@ impl Tree {
         _ => {
             // ON miss create new template
             let new_template = Template::from_tokens(next_id_snapshot, tokens);
-            let id = new_template.id;
+            let id = new_template.id();
             leaf.push(new_template);
             self.next_id += 1;
             MatchOutcome {
