@@ -26,6 +26,7 @@ tokens: &[&str]
     .map(|(i, token)| (i, token.try_match(tokens)))
     .max_by(|a, b| {
         a.1.similarity.partial_cmp(&b.1.similarity)
+        .unwrap_or(std::cmp::Ordering::Equal)
     })
 
 todo!()}
