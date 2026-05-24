@@ -18,7 +18,18 @@ pub struct MatchOutcome {
     pub created: bool,
 }
 
-fn score_leaf(leaf: &[Template], tokens: &[&str]) -> Option<(usize, MatchResult)> { todo!()}
+fn score_leaf(leaf: &[Template], 
+tokens: &[&str]
+) -> Option<(usize, crate::template::MatchResult)> {
+    leaf.iter()
+    .enumerate()
+    .map(|(i, token)| (i, token.try_match(tokens)))
+    .max_by(|a, b| {
+        a.1.similarity.partial_cmp(&b.1.similarity)
+    })
+
+todo!()}
+
 impl Tree {
     pub fn new(threshold: f64) -> Self {
         Self {
