@@ -95,4 +95,12 @@ pub extern "C" fn drain_parse(
     0
 }
 
+#[unsafe(no_mangle)]
+pub extern "C" fn drain_create(threshold: f64) -> *mut Drain {
+    let drain = Box::new(Drain {
+        tree: std::sync::Mutex::new(crate::tree::Tree::new(threshold)),
+        config: DrainConfig::default(),
+    });
+    Box::into_raw(drain)
+}
 
