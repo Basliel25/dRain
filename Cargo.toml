@@ -7,5 +7,6 @@ authors = ["Basliel B. Gugsa"]
 license = "MIT"
 
 [dependencies]
+libc = "0.2.186"
 regex = "1.12.3"
 

@@ -95,7 +95,7 @@ impl Tree {
             let rematch = template.try_match(tokens);
             MatchOutcome {
                 id: template.id(),
-                params: result.params.into_iter().map(|s| s.into()).collect(),
+                params: rematch.params.into_iter().map(|s| s.into()).collect(),
                 created: false,
             }
         }

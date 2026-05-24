@@ -45,6 +45,7 @@ impl Default for DrainConfig {
 /// A Drain log template parser.
 pub struct Drain {
     config: DrainConfig,
+    tree: std::sync::Mutex<crate::tree::Tree>,
 }
 
 // FFI Entry Points
