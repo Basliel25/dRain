@@ -16,7 +16,6 @@ pub mod tree;
 pub mod template;
 
 use std::ffi::{c_char, c_int};
-use std::sync::RwLock;
 
 
 /// Configuration for a Drain parser instance.
