@@ -94,7 +94,7 @@ impl Tree {
             template.record_match();
             MatchOutcome {
                 id: template.id(),
-                params: result.params,
+                params: result.params.into_iter().map(|s| s.into()).collect(),
                 created: false,
             }
         }
