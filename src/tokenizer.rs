@@ -123,5 +123,20 @@ mod tests {
         assert_eq!(tokenize("foo\tbar\tbaz"), vec!["foo", "bar", "baz"]);
     }
 
-
+    #[test]
+    fn end_to_end_sshd_login_line() {
+        let raw = "sshd[1234]: Failed password for alice from 192.168.1.1";
+        let expected = vec![
+            "sshd[<*>]:",
+            "Failed",
+            "password",
+            "for",
+            "alice",
+            "from",
+            "<*>",
+        ];
+        let pre_process = preprocess(raw);
+        let result = tokenize(&pre_process);
+        assert_eq!(result, expected);
+    }
 }
