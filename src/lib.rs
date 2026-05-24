@@ -121,3 +121,8 @@ pub extern "C" fn drain_create(threshold: f64) -> *mut Drain {
 }
 
 
+#[unsafe(no_mangle)]
+pub extern "C" fn drain_destroy(handle: *mut Drain) {
+    if handle.is_null() { return; }
+    unsafe { drop(Box::from_raw(handle)); }
+}
