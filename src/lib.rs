@@ -62,12 +62,14 @@ pub struct Drain {
 /// * `-1` on failure (null pointer, allocation error).
 #[unsafe(no_mangle)]
 pub extern "C" fn drain_parse(
+    handle: *mut Drain,
     raw_line: *const c_char,
     template_id_out: *mut u64,
     params_out: *mut *mut c_char,
     params_len: *mut c_int,
 ) -> c_int {
-    if raw_line.is_null()
+    if handle.is_null()
+        || raw_line.is_null()
         || template_id_out.is_null()
         || params_out.is_null()
         || params_len.is_null()
@@ -75,26 +77,19 @@ pub extern "C" fn drain_parse(
         return -1;
     }
 
-    // Convert C string to Rust &str
     let c_str = unsafe { std::ffi::CStr::from_ptr(raw_line) };
-    let Ok(raw) = c_str.to_str() else {
-        return -1;
+    let Ok(raw) = c_str.to_str() else { return -1; };
+
+    let drain = unsafe { &*handle };
+    let mut tree = match drain.tree.lock() {
+        Ok(g) => g,
+        Err(_) => return -1,  // poisoned mutex
     };
 
-    //   Takss
-    //   Call Drain::parse(raw)
-    //   Write template_id to template_id_out
-    //   Allocate params array and copy parameter strings
-    //   Write count to params_len
-
-    unsafe {
-        *template_id_out = 0;
-        *params_len = 0;
-        *params_out = std::ptr::null_mut();
-    }
-    0
+    let preprocessed = crate::tokenizer::preprocess(raw);
+    let tokens = crate::tokenizer::tokenize(&preprocessed);
+    let outcome = tree.match_or_insert(&tokens);
 }
-
 #[unsafe(no_mangle)]
 pub extern "C" fn drain_create(threshold: f64) -> *mut Drain {
     let drain = Box::new(Drain {
