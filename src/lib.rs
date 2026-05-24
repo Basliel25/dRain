@@ -89,6 +89,27 @@ pub extern "C" fn drain_parse(
     let preprocessed = crate::tokenizer::preprocess(raw);
     let tokens = crate::tokenizer::tokenize(&preprocessed);
     let outcome = tree.match_or_insert(&tokens);
+
+    // Generate output
+    unsafe {
+        *template_id_out = outcome.id;
+        *params_len = outcome.params.len() as c_int;
+
+        if outcome.params.is_empty() {
+            *params_out = std::ptr::null_mut();
+        } else {
+            let arr = libc::malloc(
+                outcome.params.len() * std::mem::size_of::<*mut c_char>()
+            ) as *mut *mut c_char;
+            if arr.is_null() { return -1; }
+            for (i, p) in outcome.params.iter().enumerate() {
+                let cs = std::ffi::CString::new(p.as_str()).unwrap_or_default();
+                *arr.add(i) = cs.into_raw();
+            }
+            *params_out = arr;
+        }
+    }
+    0
 }
 #[unsafe(no_mangle)]
 pub extern "C" fn drain_create(threshold: f64) -> *mut Drain {
