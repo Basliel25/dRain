@@ -65,7 +65,7 @@ pub extern "C" fn drain_parse(
     handle: *mut Drain,
     raw_line: *const c_char,
     template_id_out: *mut u64,
-    params_out: *mut *mut c_char,
+    params_out: *mut *mut *mut c_char,
     params_len: *mut c_int,
 ) -> c_int {
     if handle.is_null()
@@ -119,4 +119,5 @@ pub extern "C" fn drain_create(threshold: f64) -> *mut Drain {
     });
     Box::into_raw(drain)
 }
+
 
