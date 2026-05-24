@@ -125,3 +125,17 @@ pub extern "C" fn drain_destroy(handle: *mut Drain) {
     if handle.is_null() { return; }
     unsafe { drop(Box::from_raw(handle)); }
 }
+
+#[unsafe(no_mangle)]
+pub extern "C" fn drain_free_params(params: *mut *mut c_char, len: c_int) {
+    if params.is_null() { return; }
+    unsafe {
+        for i in 0..len as usize {
+            let ptr = *params.add(i);
+            if !ptr.is_null() {
+                drop(std::ffi::CString::from_raw(ptr));
+            }
+        }
+        libc::free(params as *mut libc::c_void);
+    }
+}
