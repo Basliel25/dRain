@@ -26,6 +26,21 @@ impl Tree {
             threshold,
         }
     }
+    pub fn match_or_insert(&mut self, tokens: &[&str]) -> MatchOutcome {todo!()}
 }
 
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn insert_into_empty_tree() {
+        let mut tree = Tree::new(0.5);
+        let tokens = ["sshd[<*>]:", "Failed", "password"];
+        let outcome = tree.match_or_insert(&tokens);
+        assert_eq!(outcome.id, 0);
+        assert!(outcome.created);
+        assert!(outcome.params.is_empty());
+    }
+}
