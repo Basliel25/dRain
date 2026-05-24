@@ -76,4 +76,46 @@ mod tests {
     fn preprocess_replaces_pid_in_brackets() {
         assert_eq!(preprocess("sshd[1234]:"), "sshd[<*>]:");
     }
+
+    #[test]
+    fn preprocess_leaves_words_untouched() {
+        assert_eq!(
+            preprocess("Failed password for user"),
+            "Failed password for user"
+        );
+    }
+
+    #[test]
+    fn preprocess_empty_string() {
+        assert_eq!(preprocess(""), "");
+    }
+
+    // Tokenizing tests
+
+    #[test]
+    fn tokenize_simple() {
+        assert_eq!(tokenize("foo bar baz"), vec!["foo", "bar", "baz"]);
+    }
+
+    #[test]
+    fn tokenize_collapses_multiple_spaces() {
+        assert_eq!(tokenize("foo   bar"), vec!["foo", "bar"]);
+    }
+
+    #[test]
+    fn tokenize_strips_leading_trailing_whitespace() {
+        assert_eq!(tokenize("  foo bar  "), vec!["foo", "bar"]);
+    }
+
+    #[test]
+    fn tokenize_empty_string() {
+        let result: Vec<&str> = tokenize("");
+        assert!(result.is_empty());
+    }
+
+    #[test]
+    fn tokenize_single_token() {
+        assert_eq!(tokenize("foo"), vec!["foo"]);
+    }
+
 }
