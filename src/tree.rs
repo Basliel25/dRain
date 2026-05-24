@@ -92,6 +92,7 @@ impl Tree {
             let template = &mut leaf[idx];
             template.merge(tokens);
             template.record_match();
+            let rematch = template.try_match(tokens);
             MatchOutcome {
                 id: template.id(),
                 params: result.params.into_iter().map(|s| s.into()).collect(),
