@@ -6,6 +6,9 @@ description = "Streaming log template extraction engine"
 authors = ["Basliel B. Gugsa"]
 license = "MIT"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 libc = "0.2.186"
 regex = "1.12.3"
