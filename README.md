@@ -43,7 +43,7 @@ Header: `include/drain.h`.
 | Corpus | Templates found | Drain3 ground truth | Status |
 |---|---|---|---|
 | Linux_2k.log | 34 | ~30 | ✅ within ±20% |
-| OpenSSH_2k.log | 19 | ~50 | ⚠️ over-merging, see issue #3 |
+| OpenSSH_2k.log | 19 | ~50 | ⚠️ over-merging, see issue #5 |
 
 ## Known issues
 
