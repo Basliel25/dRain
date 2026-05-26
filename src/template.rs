@@ -234,7 +234,7 @@ mod tests {
             TokenSlot::Wildcard,
         ];
 
-        let mut temp = Template::from_slots(1, slots);
+       let mut temp = Template::from_slots(1, slots);
        let num_promoted = temp.merge(&["Failed", "Pass", "For", "bob"]);
        assert_eq!(num_promoted, 0);
        assert_eq!(temp.slots(), &[
@@ -271,5 +271,28 @@ mod tests {
        t.record_match();
        assert_eq!(t.match_count(), 2);
    }
-   // Count of merge is accurate? - on multiple merges
+
+   // Serialization and Deserialization Preserves data
+   #[test]
+   fn serialize_deserliaze_preserves_data() {
+        let slots = vec![
+            TokenSlot::Literal("Failed".into()),
+            TokenSlot::Literal("Pass".into()),
+            TokenSlot::Literal("For".into()),
+            TokenSlot::Wildcard,
+        ];
+
+        let mut template = Template::from_slots(1, slots);
+        template.record_match();
+        template.record_match();
+
+        let json = serde_json::to_string_pretty(&template).expect("serialize");
+        println!("Serialized\n{}\n", json);
+        let back: Template = serde_json::from_str(&json).expect("deserialize");
+
+        assert_eq!(back.id(), template.id());
+        assert_eq!(back.slots(), template.slots());
+        assert_eq!(back.match_count(), template.match_count());
+
+   }
 }
