@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::template::Template;
+use crate::template::{Template, TokenSlot};
 use crate::snapshot::DrainSnapshot;
 
 pub struct Tree {
@@ -139,16 +139,16 @@ impl Tree {
     /// (slots.len(), first_literal_token)
     pub fn load(snapshot: DrainSnapshot) -> Self {
         let mut tree = Tree {
-           by_length: Hashmap::new(),
+           by_length: HashMap::new(),
            next_id: snapshot.next_id,
            threshold: snapshot.threshold,
         };
 
         for template in snapshot.templates {
             let length = template.slots().len();
-            let first_key = //first_token_key(template.slots());
+            let first_key = Self::first_token_key(template.slots());
 
-            let leaf = tree.find_or_create_leaf_mut(length, first_key);
+            let leaf = tree.find_or_create_leaf_mut(length, &first_key);
             leaf.push(template);
         }
 
@@ -165,6 +165,15 @@ impl Tree {
             for t in templates {temp_out.push(t.clone());}
         }
     }
+    }
+
+    /// Picking path key
+    fn first_token_key(slot: &[TokenSlot]) -> Box<str> {
+        match slot.first() {
+            Some(TokenSlot::Literal(lit)) => lit.clone(),
+            Some(TokenSlot::Wildcard) => "<*>".into(),
+            None => unreachable!("NO tokenslot found"),
+        }
     }
 }
 
