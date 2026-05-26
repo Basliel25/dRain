@@ -65,54 +65,54 @@ impl Tree {
         }
     }
     pub fn match_or_insert(&mut self, tokens: &[&str]) -> MatchOutcome {
-    // Guard against empty lines, create sentinerl and stop
-    if tokens.is_empty() {
-        return MatchOutcome {
-            id: u64::MAX,
-            params: Vec::new(),
-            created: false,
-        };
-    }
-
-    let length = tokens.len();
-    let first_token = tokens[0];
-    let threshold = self.threshold;
-
-    // Pull next_id into a local copy avoid double-borrow with &mut.
-    let next_id_snapshot = self.next_id;
-
-    let leaf = self.find_or_create_leaf_mut(length, first_token);
-
-    // Score match with existing templates
-    let best = score_leaf(leaf, tokens);
-
-    match best {
-        Some((idx, result)) if result.similarity >= threshold => {
-            // Match found merge tokens update count
-            let template = &mut leaf[idx];
-            template.merge(tokens);
-            template.record_match();
-            let rematch = template.try_match(tokens);
-            MatchOutcome {
-                id: template.id(),
-                params: rematch.params.into_iter().map(|s| s.into()).collect(),
-                created: false,
-            }
-        }
-        _ => {
-            // ON miss create new template
-            let new_template = Template::from_tokens(next_id_snapshot, tokens);
-            let id = new_template.id();
-            leaf.push(new_template);
-            self.next_id += 1;
-            MatchOutcome {
-                id,
+        // Guard against empty lines, create sentinerl and stop
+        if tokens.is_empty() {
+            return MatchOutcome {
+                id: u64::MAX,
                 params: Vec::new(),
-                created: true,
+                created: false,
+            };
+        }
+
+        let length = tokens.len();
+        let first_token = tokens[0];
+        let threshold = self.threshold;
+
+        // Pull next_id into a local copy avoid double-borrow with &mut.
+        let next_id_snapshot = self.next_id;
+
+        let leaf = self.find_or_create_leaf_mut(length, first_token);
+
+        // Score match with existing templates
+        let best = score_leaf(leaf, tokens);
+
+        match best {
+            Some((idx, result)) if result.similarity >= threshold => {
+                // Match found merge tokens update count
+                let template = &mut leaf[idx];
+                template.merge(tokens);
+                template.record_match();
+                let rematch = template.try_match(tokens);
+                MatchOutcome {
+                    id: template.id(),
+                    params: rematch.params.into_iter().map(|s| s.into()).collect(),
+                    created: false,
+                }
+            }
+            _ => {
+                // ON miss create new template
+                let new_template = Template::from_tokens(next_id_snapshot, tokens);
+                let id = new_template.id();
+                leaf.push(new_template);
+                self.next_id += 1;
+                MatchOutcome {
+                    id,
+                    params: Vec::new(),
+                    created: true,
+                }
             }
         }
     }
-}
 }
 
 #[cfg(test)]

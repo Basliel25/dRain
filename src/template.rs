@@ -7,9 +7,10 @@
 /// Create nodes form tokens
 /// Produce similarity score for incoming tokens
 /// merge similar tokens 
-///
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum TokenSlot {
     /// A fixed token that must match exactly
     Literal(Box<str>),
@@ -21,7 +22,7 @@ pub enum TokenSlot {
 pub type TemplateId = u64;
 
 /// Structural pattern that is extracted from log lines
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Template {
     id: TemplateId,
     slots: Vec<TokenSlot>,
