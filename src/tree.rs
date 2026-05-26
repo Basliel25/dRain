@@ -116,13 +116,13 @@ impl Tree {
     }
 
     // **** Serialization Methods **** //
+    
     /// Walk the learned tree and collect every templates
     /// into a flat snapshot
     pub fn dump(&self) -> DrainSnapshot {
         let mut templates = Vec::new();
         for node in self.by_length.values() {
-            todo!()
-            // collect_templates(node, &mut templates)
+            Self::collect_templates(node, &mut templates)
         }
 
         DrainSnapshot {
@@ -132,7 +132,40 @@ impl Tree {
             templates: templates,
         }
     }
-     
+
+    // Rebuild method
+    /// Rebuild a tree from a snapshot
+    /// !! Each template is placed at:
+    /// (slots.len(), first_literal_token)
+    pub fn load(snapshot: DrainSnapshot) -> Self {
+        let mut tree = Tree {
+           by_length: Hashmap::new(),
+           next_id: snapshot.next_id,
+           threshold: snapshot.threshold,
+        };
+
+        for template in snapshot.templates {
+            let length = template.slots().len();
+            let first_key = //first_token_key(template.slots());
+
+            let leaf = tree.find_or_create_leaf_mut(length, first_key);
+            leaf.push(template);
+        }
+
+        tree
+    }
+
+    /// Helper to walk a treeNode
+    fn collect_templates(node: &TreeNode, temp_out: &mut Vec<Template>) {
+    match node {
+        TreeNode::Length(map) => {
+            for child in map.values() {Self::collect_templates(child, temp_out);}
+        },
+        TreeNode::Leaf(templates) => {
+            for t in templates {temp_out.push(t.clone());}
+        }
+    }
+    }
 }
 
 #[cfg(test)]
