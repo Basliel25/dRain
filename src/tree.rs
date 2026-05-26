@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use crate::template::{Template, TokenSlot};
 use crate::snapshot::DrainSnapshot;
+use crate::tokenizer::{preprocess, tokenize};
 
 pub struct Tree {
     by_length: HashMap<usize, TreeNode>,
@@ -229,5 +230,43 @@ mod tests {
         assert!(!second.created);
         // The diverging position was promoted to wildcard, "bob" extracted
         assert_eq!(second.params, vec!["bob"]);
+    }
+
+    // Final load/dump roundtrip test
+    #[test]
+    fn roundtrip_dump_load() {
+        let lines = [
+            "sshd[1234]: Failed password for alice from 192.168.1.1",
+            "sshd[5678]: Failed password for bob from 10.0.0.1",
+            "sshd[9012]: Accepted password for carol from 172.16.0.1",
+            "kernel: CPU0: temperature above threshold",
+            "cron[111]: starting job at 0xdeadbeef",
+            "sshd[2222]: Failed password for dave from 192.168.1.2",
+        ];
+
+        let mut temp1 = Tree::new(0.5);
+        let ids_first : Vec<u64> = lines.iter().map(|l| {
+            let pre = preprocess(l);
+            let tokens = tokenize(&pre);
+            temp1.match_or_insert(&tokens).id
+        }).collect();
+
+
+        // Round trip with json
+        let snap = temp1.dump();
+        let json = serde_json::to_string(&snap).expect("serialize");
+        let snap2: crate::snapshot::DrainSnapshot =
+            serde_json::from_str(&json).expect("deserialize");
+        let mut t2 = Tree::load(snap2);
+
+        // Second pass: same lines must produce same ids
+        let ids_second: Vec<u64> = lines.iter().map(|l| {
+            let pre = preprocess(l);
+            let tokens = tokenize(&pre);
+            t2.match_or_insert(&tokens).id
+        }).collect();
+
+        assert_eq!(ids_first, ids_second,
+        "template ids diverged");
     }
 }
