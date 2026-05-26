@@ -91,6 +91,23 @@ fn main()-> std::process::ExitCode {
     }
 
 
+    // Save if requested
+    if let Some(path) = save_path {
+        let snap = tree.dump();
+        let json = match serde_json::to_string_pretty(&snap) {
+            Ok(s) => s,
+            Err(e) => {
+                eprintln!("error: failed to serialize tree: {}", e);
+                return std::process::ExitCode::from(1);
+            }
+        };
+
+        if let Err(e) = fs::write(&path, json) {
+            eprintln!("error: Failed to write {}: {}", path, e);
+            return std::process::ExitCode::from(1);
+        }
+    }
+
     std::process::ExitCode::SUCCESS
 }
 
