@@ -17,5 +17,5 @@ pub struct DrainSnapshot {
 }
 
 impl DrainSnapshot {
-    pub const CURRENT_VERSION: u32 = 1;
+    pub const CURRENT_VERSION: u64 = 1;
 }

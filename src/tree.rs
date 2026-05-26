@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use crate::template::Template;
+use crate::snapshot::DrainSnapshot;
 
 pub struct Tree {
     by_length: HashMap<usize, TreeNode>,
@@ -114,6 +115,23 @@ impl Tree {
         }
     }
 
+    // **** Serialization Methods **** //
+    /// Walk the learned tree and collect every templates
+    /// into a flat snapshot
+    pub fn dump(&self) -> DrainSnapshot {
+        let mut templates = Vec::new();
+        for node in self.by_length.values() {
+            todo!()
+            // collect_templates(node, &mut templates)
+        }
+
+        DrainSnapshot {
+            version: DrainSnapshot::CURRENT_VERSION,
+            threshold: self.threshold,
+            next_id: self.next_id,
+            templates: templates,
+        }
+    }
      
 }
 
