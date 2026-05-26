@@ -22,7 +22,7 @@ pub enum TokenSlot {
 pub type TemplateId = u64;
 
 /// Structural pattern that is extracted from log lines
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Template {
     id: TemplateId,
     slots: Vec<TokenSlot>,
