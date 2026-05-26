@@ -7,9 +7,10 @@
 /// Create nodes form tokens
 /// Produce similarity score for incoming tokens
 /// merge similar tokens 
-///
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum TokenSlot {
     /// A fixed token that must match exactly
     Literal(Box<str>),
@@ -21,7 +22,7 @@ pub enum TokenSlot {
 pub type TemplateId = u64;
 
 /// Structural pattern that is extracted from log lines
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Template {
     id: TemplateId,
     slots: Vec<TokenSlot>,
@@ -144,6 +145,9 @@ impl Template {
     pub fn match_count(&self)-> u64{self.match_count}
     pub fn slots(&self) -> &[TokenSlot]{&self.slots}
 
+    // Setters
+    pub fn set_match_count(&mut self, match_count: u64) {self.match_count = match_count}
+
     /// Constuctor for tests
     #[cfg(test)]
     pub(crate) fn from_slots(id: TemplateId, slots: Vec<TokenSlot>) -> Self {
@@ -230,7 +234,7 @@ mod tests {
             TokenSlot::Wildcard,
         ];
 
-        let mut temp = Template::from_slots(1, slots);
+       let mut temp = Template::from_slots(1, slots);
        let num_promoted = temp.merge(&["Failed", "Pass", "For", "bob"]);
        assert_eq!(num_promoted, 0);
        assert_eq!(temp.slots(), &[
@@ -267,5 +271,41 @@ mod tests {
        t.record_match();
        assert_eq!(t.match_count(), 2);
    }
-   // Count of merge is accurate? - on multiple merges
+
+   // Serialization and Deserialization Preserves data
+   #[test]
+   fn serialize_deserliaze_preserves_data() {
+        let slots = vec![
+            TokenSlot::Literal("Failed".into()),
+            TokenSlot::Literal("Pass".into()),
+            TokenSlot::Literal("For".into()),
+            TokenSlot::Wildcard,
+        ];
+
+        let mut template = Template::from_slots(1, slots);
+        template.record_match();
+        template.record_match();
+
+        let json = serde_json::to_string_pretty(&template).expect("serialize");
+        println!("Serialized\n{}\n", json);
+        let back: Template = serde_json::from_str(&json).expect("deserialize");
+
+        assert_eq!(back.id(), template.id());
+        assert_eq!(back.slots(), template.slots());
+        assert_eq!(back.match_count(), template.match_count());
+
+   }
+
+   #[test]
+   fn serialize_deserialize_preserves_matchCount() {
+       let mut template = Template::new_template(4, &["foo", "sshd", "brute"]);
+       template.record_match();
+       template.record_match();
+       template.record_match();
+
+       let json = serde_json::to_string(&template).unwrap();
+       let back: Template = serde_json::from_str(&json).unwrap();
+
+       assert_eq!(template.match_count(), back.match_count());
+    }
 }

@@ -14,6 +14,7 @@
 pub mod tokenizer;
 pub mod tree;
 pub mod template;
+pub mod snapshot;
 
 use std::ffi::{c_char, c_int};
 
