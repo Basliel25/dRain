@@ -2,7 +2,7 @@ use std::env;
 use std::io::{self, BufRead, Write};
 use std::fs;
 use dRain::tree::Tree;
-use dRain::tokenizer::{preprocess, tokenize_line};
+use dRain::tokenizer::{preprocess, tokenize_line, tokenize};
 use dRain::snapshot::DrainSnapshot;
 
 fn main()-> std::process::ExitCode {
@@ -67,24 +67,30 @@ fn main()-> std::process::ExitCode {
 
     };
     let stdin = io::stdin();
+    let stdout = io::stdout();
+    let mut out = stdout.lock();
 
+    // Drain Straem
     for line in stdin.lock().lines() {
         let raw = match line {
             Ok(l) => l,
             Err(_) => continue,
         };
+
         if raw.is_empty() { continue; }
 
-        let tokens = tokenize_line(&raw);  
-        let refs: Vec<&str> = tokens.iter().map(|s| s.as_ref()).collect();
-        let outcome = tree.match_or_insert(&refs);
+        let pre = preprocess(&raw);
+        let tokens = tokenize(&pre);
+        let outcome = tree.match_or_insert(&tokens);
 
-        print!("{}", outcome.id);
+        let _ = write!(out, "{}", outcome.id);
         for p in &outcome.params {
-            print!("\t{}", p);
+            let _ = write!(out, "\t{}", p);
         }
-        println!();
+        let _ = writeln!(out);
     }
+
+
     std::process::ExitCode::SUCCESS
 }
 
