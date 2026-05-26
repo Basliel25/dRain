@@ -295,4 +295,17 @@ mod tests {
         assert_eq!(back.match_count(), template.match_count());
 
    }
+
+   #[test]
+   fn serialize_deserialize_preserves_matchCount() {
+       let mut template = Template::new_template(4, &["foo", "sshd", "brute"]);
+       template.record_match();
+       template.record_match();
+       template.record_match();
+
+       let json = serde_json::to_string(&template).unwrap();
+       let back: Template = serde_json::from_str(&json).unwrap();
+
+       assert_eq!(template.match_count(), back.match_count());
+    }
 }
