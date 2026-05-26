@@ -144,6 +144,9 @@ impl Template {
     pub fn match_count(&self)-> u64{self.match_count}
     pub fn slots(&self) -> &[TokenSlot]{&self.slots}
 
+    // Setters
+    pub fn set_match_count(&mut self, match_count: u64) {self.match_count = match_count}
+
     /// Constuctor for tests
     #[cfg(test)]
     pub(crate) fn from_slots(id: TemplateId, slots: Vec<TokenSlot>) -> Self {
