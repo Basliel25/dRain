@@ -1,7 +1,7 @@
 # dRain
 
 Streaming log template extraction in Rust, with a C FFI integration. 
-It implements the Drain algorithm (He et al., ICWS 2017)[https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf] with a fixed depth tree.
+It implements the Drain algorithm [He et al., ICWS 2017](https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf) with a fixed depth tree.
 
 Read how I made it [here](https://basz-website.basgug25.workers.dev/projects/drain/)
 **Integrates:** [trafilo](https://github.com/Basliel25/trafilo) for event transport
