@@ -40,7 +40,7 @@ fn main()-> std::process::ExitCode {
                     eprintln!("error: Format requies a log type");
                     return std::process::ExitCode::from(2);
                 };
-                format = match p.as_str() {
+                log_format = match p.as_str() {
                     "linux" => LogFormat::Linux, 
                     "raw" => LogFormat::PassThrough,
                     other => {
