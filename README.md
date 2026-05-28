@@ -8,18 +8,29 @@ It implements the Drain algorithm [He et al., ICWS 2017](https://jiemingzhu.gith
 
 Read how I made it [here](https://basz-website.basgug25.workers.dev/projects/drain/)
 
-## Use
+## Usage
 
 ### As a stdin binary
 
 ```bash
 cargo build --release
-echo "sshd[1234]: Failed password for alice from 192.168.1.1" | \
-    ./target/release/drain
+cat <path_to_log_file> | \
+    ./target/release/drain > <output_file>
 # 0
 ```
 output Format: `template_id<TAB>param1<TAB>param2...`
+```
 
+### Template persistence
+You can save or load templates learned by dRain in a `json` file.
+**Save**
+```
+/target/release/drain [-s | --save] <path_to_file>
+```
+**Load**
+```
+/target/release/drain [-l | --load] <path_to_file>
+```
 ### As a C library
 
 ```c
