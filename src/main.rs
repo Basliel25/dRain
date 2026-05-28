@@ -34,6 +34,22 @@ fn main()-> std::process::ExitCode {
                 save_path = Some(p.clone());
                 i += 2;
             },
+
+            "--format" | "-f" => {
+                let Some(p) = args.get(i+1) else {
+                    eprintln!("error: Format requies a log type");
+                    return std::process::ExitCode::from(2);
+                };
+                format = match p.as_str() {
+                    "linux" => LogFormat::Linux, 
+                    "raw" => LogFormat::PassThrough,
+                    other => {
+                        eprintln!("{} unknow format", other);
+                        return std::process::ExitCode::from(2);
+                    } 
+                };
+                i += 2;
+            },
             "-h" | "--help" => {
                 eprintln!("Usage: drain [--load <path>] | [--save <path>]");
                 return std::process::ExitCode::SUCCESS;
@@ -81,7 +97,11 @@ fn main()-> std::process::ExitCode {
 
         if raw.is_empty() { continue; }
 
-        let pre = preprocess(&raw);
+        let pre_emble = match log_format.strip_preamble(&raw) {
+            Some(c)=> c,
+            None => continue,
+        };
+        let pre = preprocess(pre_emble);
         let tokens = tokenize(&pre);
         let outcome = tree.match_or_insert(&tokens);
 
