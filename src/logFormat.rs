@@ -5,7 +5,7 @@ use regex::Regex;
 /// Preproccess happens based on log format
 /// If the format is not supported drain process
 /// with default tokenization
-#[derive(Debug, copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub enum LogFormat {
     Linux,
     PassThrough,
@@ -19,15 +19,14 @@ static RE_LINUX: LazyLock<Regex> = LazyLock::new(|| Regex::new(
 
 impl LogFormat {
     pub fn strip_preamble<'a>(&self, line: &'a str) -> Option<&'a str>{
-
         match self {
-            LogFormat::Linux => extract_linux(line),
+            LogFormat::Linux => Self::extract_linux(line),
             LogFormat::PassThrough => Some(line),
         }
     }
 
-    fn extract_linx(line: &str) -> Option<&str> {
-        RE_LINX().captures(line)
+    fn extract_linux(line: &str) -> Option<&str> {
+        RE_LINUX.captures(line)
             .and_then(|c| c.name("content"))
             .map(|m| m.as_str())
     }
