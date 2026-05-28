@@ -11,6 +11,11 @@ pub enum LogFormat {
     PassThrough,
 }
 
+// *** Regex patterns **//
+static RE_LINUX: LazyLock<Regex> = LazyLock::new(|| Regex::new(
+    r"^\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}\s+\S+\s+\S+?:\s+(?P<content>.*)$"
+).unwrap());
+
 
 impl LogFormat {
     pub fn strip_preamble<'a>(&self, line: &'a str) -> Option<&'a str>{
@@ -21,5 +26,9 @@ impl LogFormat {
         }
     }
 
-    fn extract_linx(&'a str) -> Option<&'a str> {Some(line)}
+    fn extract_linx(line: &str) -> Option<&str> {
+        RE_LINX().captures(line)
+            .and_then(|c| c.name("content"))
+            .map(|m| m.as_str())
+    }
 }
