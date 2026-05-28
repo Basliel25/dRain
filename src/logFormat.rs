@@ -13,5 +13,13 @@ pub enum LogFormat {
 
 
 impl LogFormat {
-    pub fn strip_preamble<'a>(&self, line: &'a str) -> Option<&'a str> {}
+    pub fn strip_preamble<'a>(&self, line: &'a str) -> Option<&'a str>{
+
+        match self {
+            LogFormat::Linux => extract_linux(line),
+            LogFormat::PassThrough => Some(line),
+        }
+    }
+
+    fn extract_linx(&'a str) -> Option<&'a str> {Some(line)}
 }
