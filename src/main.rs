@@ -63,8 +63,7 @@ fn main()-> std::process::ExitCode {
             };
             Tree::load(snap)
         },
-        None => Tree::new(0.5)
-
+        None => Tree::new(0.1)
     };
     let stdin = io::stdin();
     let stdout = io::stdout();

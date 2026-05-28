@@ -1,1 +1,4 @@
 /target
+/templates
+Pipfile
+Pipfile.lock
