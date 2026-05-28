@@ -15,6 +15,7 @@ pub mod tokenizer;
 pub mod tree;
 pub mod template;
 pub mod snapshot;
+pub mod logFormat;
 
 use std::ffi::{c_char, c_int};
 

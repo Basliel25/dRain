@@ -4,6 +4,7 @@ use std::fs;
 use dRain::tree::Tree;
 use dRain::tokenizer::{preprocess, tokenize_line, tokenize};
 use dRain::snapshot::DrainSnapshot;
+use dRain::logFormat::LogFormat;
 
 fn main()-> std::process::ExitCode {
 
@@ -12,6 +13,8 @@ fn main()-> std::process::ExitCode {
     let mut save_path: Option<String> = None;
 
     let mut i = 1;
+    let mut log_format = LogFormat::PassThrough;
+
     while i < args.len() {
         match args[i].as_str(){
             "--load" | "-l" => {
